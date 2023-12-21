@@ -2,6 +2,7 @@ pub mod file_hasher;
 pub mod file_reader;
 pub mod ipfs;
 pub mod local_file_system;
+pub mod remote_object_store;
 pub mod subfile_reader;
 
 use std::{
