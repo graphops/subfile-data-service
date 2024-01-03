@@ -1970,6 +1970,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "hdwallet"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a03ba7d4c9ea41552cd4351965ff96883e629693ae85005c501bb4b9e1c48a7"
+dependencies = [
+ "lazy_static",
+ "rand_core",
+ "ring 0.16.20",
+ "secp256k1 0.26.0",
+ "thiserror",
+]
+
+[[package]]
 name = "heck"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3742,11 +3755,29 @@ dependencies = [
 
 [[package]]
 name = "secp256k1"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4124a35fe33ae14259c490fd70fa199a32b9ce9502f2ee6bc4f81ec06fa65894"
+dependencies = [
+ "secp256k1-sys 0.8.1",
+]
+
+[[package]]
+name = "secp256k1"
 version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2acea373acb8c21ecb5a23741452acd2593ed44ee3d343e72baaa143bc89d0d5"
 dependencies = [
- "secp256k1-sys",
+ "secp256k1-sys 0.9.1",
+]
+
+[[package]]
+name = "secp256k1-sys"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "70a129b9e9efbfb223753b9163c4ab3b13cff7fd9c7f010fbac25ab4099fa07e"
+dependencies = [
+ "cc",
 ]
 
 [[package]]
@@ -4143,6 +4174,7 @@ dependencies = [
  "ethers",
  "ethers-core",
  "futures 0.3.29",
+ "hdwallet",
  "hex",
  "http",
  "hyper",
@@ -4154,7 +4186,7 @@ dependencies = [
  "reqwest",
  "rustls",
  "rustls-pemfile",
- "secp256k1",
+ "secp256k1 0.28.0",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -4199,7 +4231,7 @@ dependencies = [
  "reqwest",
  "rustls",
  "rustls-pemfile",
- "secp256k1",
+ "secp256k1 0.28.0",
  "serde",
  "serde_json",
  "serde_yaml",

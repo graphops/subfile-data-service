@@ -16,6 +16,7 @@ pub enum Error {
     InvalidPriceFormat(String),
     ContractError(String),
     ObjectStoreError(object_store::Error),
+    WalletError(ethers::signers::WalletError),
 }
 
 impl fmt::Display for Error {
@@ -35,6 +36,7 @@ impl fmt::Display for Error {
             Error::InvalidPriceFormat(ref msg) => write!(f, "Price format error: {}", msg),
             Error::ContractError(ref msg) => write!(f, "Contract call error: {}", msg),
             Error::ObjectStoreError(ref err) => write!(f, "Object store error: {}", err),
+            Error::WalletError(ref err) => write!(f, "Wallet error: {}", err),
         }
     }
 }

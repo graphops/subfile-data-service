@@ -53,11 +53,23 @@ async fn main() {
                 }
             }
         }
-        Role::Server(server_args) => {
+        Role::Wallet(wallet_args) => {
             tracing::info!(
-                server = tracing::field::debug(&server_args),
-                "Use subfile-service crate"
+                server = tracing::field::debug(&wallet_args),
+                "Use the provided wallet to send transactions"
             );
+
+            // Server enable payments through the staking contract,
+            // assume indexer is already registered on the staking registry contract
+            //1. `allocate` - indexer address, Qm hash in bytes32, token amount, allocation_id, metadata: utils.hexlify(Array(32).fill(0)), allocation_id_proof
+            //2. `close_allocate` -allocationID: String, poi: BytesLike (0x0 32bytes)
+            //3. `close_allocate` and then `allocate`
+            // receipt validation and storage is handled by the indexer-service framework
+            // receipt redemption is handled by indexer-agent
+
+            // Client payments - assume client signer is valid (should work without gateways)
+            //1. `deposit` - to a sender address and an amount
+            //2. `depositMany` - to Vec<sender address, an amount>
         }
     }
 }

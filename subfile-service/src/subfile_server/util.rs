@@ -1,5 +1,4 @@
 use build_info::BuildInfo;
-use ethers::signers::WalletError;
 
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -92,10 +91,9 @@ fn load_private_key(filename: &str) -> Result<rustls::PrivateKey, Error> {
 }
 
 /// Validate that private key as an Eth wallet
-pub fn public_key(value: &str) -> Result<String, WalletError> {
-    // The wallet can be stored instead of the original private key
+pub fn public_key(value: &str) -> Result<String, Error> {
     let wallet = build_wallet(value)?;
     let addr = wallet_address(&wallet);
-    tracing::info!(address = addr, "Resolved Graphcast id");
+    tracing::trace!(address = addr, "Resolved wallet address");
     Ok(addr)
 }

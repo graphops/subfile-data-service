@@ -7,6 +7,8 @@ use tracing::subscriber::SetGlobalDefaultError;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::FmtSubscriber;
 
+use crate::util::parse_key;
+
 #[derive(Clone, Debug, Parser, Serialize, Deserialize)]
 #[command(
     name = "subfile-exchange",
@@ -51,12 +53,12 @@ impl Cli {
 pub enum Role {
     Downloader(DownloaderArgs),
     Publisher(PublisherArgs),
-    Server(ServerArgs),
+    Wallet(WalletArgs),
 }
 
 #[derive(Clone, Debug, Args, Serialize, Deserialize, Default)]
 #[group(required = false, multiple = true)]
-pub struct ServerArgs {
+pub struct WalletArgs {
     #[arg(
         long,
         value_name = "HOST",
@@ -64,7 +66,7 @@ pub struct ServerArgs {
         env = "HOST",
         help = "Subfile server host"
     )]
-    pub host: String,
+    pub host: Option<String>,
     #[arg(
         long,
         value_name = "PORT",
@@ -72,46 +74,47 @@ pub struct ServerArgs {
         env = "PORT",
         help = "Subfile server port"
     )]
-    pub port: usize,
-    // Taking from config right now, later can read from DB table for managing server states
-    #[arg(
-        long,
-        value_name = "SUBFILES",
-        env = "SUBFILES",
-        value_delimiter = ',',
-        help = "Comma separated list of IPFS hashes and local location of the subfiles to serve upon start-up; format: [ipfs_hash:local_path]"
-    )]
-    pub subfiles: Vec<String>,
+    pub port: Option<usize>,
     #[clap(
         long,
-        value_name = "free-query-auth-token",
-        env = "FREE_QUERY_AUTH_TOKEN",
-        help = "Auth token that clients can use to query for free"
+        value_name = "KEY",
+        value_parser = parse_key,
+        env = "PRIVATE_KEY",
+        hide_env_values = true,
+        help = "Private key to the Graphcast ID wallet (Precendence over mnemonics)",
     )]
-    pub free_query_auth_token: Option<String>,
+    pub private_key: Option<String>,
     #[clap(
         long,
-        value_name = "admin-auth-token",
-        env = "ADMIN_AUTH_TOKEN",
-        help = "Admin Auth token for server management"
-    )]
-    pub admin_auth_token: Option<String>,
-    #[clap(
-        long,
-        value_name = "mnemonic",
+        value_name = "KEY",
+        value_parser = parse_key,
         env = "MNEMONIC",
-        help = "Mnemonic for the operator wallet"
+        hide_env_values = true,
+        help = "Mnemonic to the Graphcast ID wallet (first address of the wallet is used; Only one of private key or mnemonic is needed)",
     )]
-    pub mnemonic: String,
-    //TODO: More complex price management
-    #[arg(
+    pub mnemonic: Option<String>,
+    #[clap(
         long,
-        value_name = "PRICE_PER_BYTE",
-        default_value = "1",
-        env = "PRICE_PER_BYTE",
-        help = "Price per byte; price do not currently have a unit, perhaps use DAI or GRT, refer to TAP"
+        value_name = "provider_url",
+        env = "PROVIDER",
+        help = "Blockchain provider endpoint"
     )]
-    pub price_per_byte: f32,
+    pub provider: String,
+    //TODO: chain id should be resolvable through provider
+    // #[clap(
+    //     long,
+    //     value_name = "chain_id",
+    //     env = "CHAIN_ID",
+    //     help = "Protocol network's Chain ID"
+    // )]
+    // pub chain_id: u64,
+    #[clap(
+        long,
+        value_name = "verifier",
+        env = "VERIFIER",
+        help = "TAP verifier contract address"
+    )]
+    pub verifier: Option<String>,
 }
 
 #[derive(Clone, Debug, Args, Serialize, Deserialize, Default)]
