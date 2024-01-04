@@ -1,6 +1,7 @@
 use alloy_primitives::U256;
 use ethers::signers::{coins_bip39::English, LocalWallet, MnemonicBuilder, Signer, Wallet};
-use ethers_core::k256::ecdsa::SigningKey;
+use ethers_core::utils::keccak256;
+use ethers_core::{k256::ecdsa::SigningKey, utils::to_checksum};
 use ethers_core::types::H160;
 use hdwallet::{ChainPath, DefaultKeyChain, KeyChain};
 use std::{fmt, iter, str};
@@ -56,6 +57,39 @@ pub fn derive_key_pair(
 
     Ok((private_key, wallet.address()))
 }
+
+// /// create proof for allocation id
+// pub async fn allocation_id_proof(
+//     signer: &Wallet<SigningKey>,
+//     indexer_address: &str,
+//     allocation_id: &str,
+// ) -> Result<String, Box<dyn std::error::Error>> {
+//     // Convert addresses to their checksum format (EIP-55)
+//     let indexer_address = to_checksum(&Address::from_str(indexer_address)?, None);
+//     let allocation_id = to_checksum(&Address::from_str(allocation_id)?, None);
+
+//     // Hash the addresses using Keccak-256
+//     let message_hash = keccak256(format!("{}{}", indexer_address, allocation_id));
+
+//     // Sign the message hash
+//     let signature = signer.sign_hash(H256::from_slice(&message_hash), true).await?;
+
+//     Ok(signature.to_string())
+// }
+
+
+// export const allocationIdProof = (
+//   signer: Signer,
+//   indexerAddress: string,
+//   allocationId: string,
+// ): Promise<string> => {
+//   const messageHash = utils.solidityKeccak256(
+//     ['address', 'address'],
+//     [indexerAddress, allocationId],
+//   )
+//   const messageHashBytes = utils.arrayify(messageHash)
+//   return signer.signMessage(messageHashBytes)
+// }
 
 /* Token unit and formatting */
 const ONE_18: u128 = 1_000_000_000_000_000_000;

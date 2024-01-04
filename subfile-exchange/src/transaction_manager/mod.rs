@@ -8,11 +8,14 @@ use std::fs;
 use std::str::FromStr;
 use std::sync::Arc;
 
-use crate::errors::Error;
+pub mod staking;
 
+/// Contracts: (contract name, contract object)
 pub type NetworkContracts =
-    HashMap<String, Contract<SignerMiddleware<Provider<Http>, Wallet<SigningKey>>>>;
+    HashMap<String, ContractClient>;
+/// Contracts: (contract name, contract address)
 pub type ContractAddresses = HashMap<String, H160>;
+/// Client with provider endpoint and a wallet
 pub type ContractClient = SignerMiddleware<Provider<Http>, Wallet<SigningKey>>;
 
 #[derive(Debug)]
@@ -20,26 +23,6 @@ pub type ContractClient = SignerMiddleware<Provider<Http>, Wallet<SigningKey>>;
 pub struct TransactionManager {
     client: Arc<ContractClient>,
     contracts: NetworkContracts,
-}
-
-abigen!(
-    L2Staking,
-    "abis/L2Staking.json",
-    // "npm:@graphprotocol/contracts@latest/dist/abis/L2Staking.json",
-    event_derives(serde::Deserialize, serde::Serialize)
-);
-
-/// Test function to simply call a read fn of a contract
-async fn controller(client: &ContractClient, contract_addr: H160) -> Result<H160, Error> {
-    let contract = L2Staking::new(contract_addr, Arc::new(client.clone()));
-
-    let value = contract
-        .controller()
-        .call()
-        .await
-        .map_err(|e| Error::ContractError(e.to_string()))?;
-
-    Ok(value)
 }
 
 impl TransactionManager {
@@ -59,12 +42,15 @@ impl TransactionManager {
         // Initiate contract instances
         let contracts = NetworkContracts::new();
         // Test reading the function
-        let _ = controller(&client, *contract_addresses.get("L2Staking").unwrap()).await?;
-
+        let value = staking::controller(&client, *contract_addresses.get("L2Staking").unwrap()).await?;
+        println!("controller value: {:#?}", value);
+        let value = staking::allocate(&client, *contract_addresses.get("L2Staking").unwrap()).await?;
+        println!("allocate value: {:#?}", value);
         Ok(TransactionManager { client, contracts })
     }
 }
 
+/// Track network contract addresses given an address book in json
 fn network_contract_addresses(
     file_path: &str,
     chain_id: &str,

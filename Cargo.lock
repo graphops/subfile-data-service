@@ -4161,6 +4161,7 @@ dependencies = [
  "alloy-sol-types",
  "anyhow",
  "base64 0.21.5",
+ "bs58",
  "build-info",
  "build-info-build",
  "bytes",
