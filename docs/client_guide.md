@@ -31,7 +31,8 @@ After determining the subfile CID, client should supply a local path for writing
    --free-query-auth-token 'Bearer imfreeee' \
    --mnemonic "sheriff obscure trick beauty army fat wink legal flee leader section suit" \
    --chain-id 421614 \
-   --verifier 0xfC24cE7a4428A6B89B52645243662A02BA734ECF
+   --verifier 0xfC24cE7a4428A6B89B52645243662A02BA734ECF \
+   --provider [arbitrum-sepolia-rpc-endpoint]
 ```
 
 
